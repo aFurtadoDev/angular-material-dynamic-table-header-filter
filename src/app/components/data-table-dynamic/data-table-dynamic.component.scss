@@ -1,0 +1,97 @@
+table {
+  width: 100%;
+}
+
+.first-header-row th {
+  border-bottom: none;
+}
+
+.second-header-row {
+  font-style: italic;
+}
+
+.first-footer-row {
+  font-weight: bold;
+}
+
+.second-footer-row td {
+  color: #900000;
+}
+
+.first-header-row th {
+  /* border-bottom: 1px solid #ddd; */
+}
+
+tr.mat-header-row,
+tr.mat-row {
+  height: 35px !important;
+}
+
+th.mat-header-cell:last-of-type,
+td.mat-cell:last-of-type {
+  padding-right: 5px !important;
+}
+
+.mat-column-actions {
+  text-align: center;
+}
+
+.mat-form-field {
+  width: 100%;
+}
+
+// ::ng-deep .filters-container .mat-form-field-infix {
+//   /* border-top: 0.5em solid transparent !important; */
+//   padding: 0.5em 0 !important;
+//   width: 100% !important;
+// }
+
+// ::ng-deep
+//   .filters-container
+//   .mat-form-field-appearance-outline
+//   .mat-form-field-suffix {
+//   text-align: end !important;
+// }
+
+/* Classe para collapse da linha de filtro no header */
+
+/* .no-default-height {
+  height: unset;
+} */
+
+.mat-cell,
+.mat-footer-cell {
+  font-size: 12px;
+}
+
+.mat-icon-button {
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  width: 35px;
+  height: 35px;
+  line-height: 35px;
+}
+
+tr.mat-header-filter {
+  height: 0 !important;
+  th.mat-header-cell {
+    padding-right: 5px;
+    .filterHeaderCell {
+      padding-bottom: 5px !important;
+    }
+  }
+  .filters-container {
+    text-align: center;
+    overflow: hidden !important;
+    max-height: 0px !important;
+    transition: max-height 0.5s ease-in-out !important;
+    ::ng-deep .mat-form-field-wrapper {
+      margin: 0 !important;
+      padding-bottom: 0 !important;
+    }
+    &.animate {
+      max-height: 35px !important;
+    }
+  }
+}
