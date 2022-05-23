@@ -1,4 +1,3 @@
-import { stringify } from '@angular/compiler/src/util';
 import {
   Component,
   EventEmitter,
@@ -9,7 +8,6 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -55,24 +53,13 @@ export class DataTableDynamicComponent implements OnChanges, OnInit {
   ngOnInit(): void {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    // console.log(this.dataSource);
+    console.log(changes);
     if (this.data) {
-      // console.log(this.dataSource);
       if (changes.data) {
-        // console.log(this.dataSource);
         this.dataSource = new MatTableDataSource(this.data);
         this.dataSource.filterPredicate = (item, filter: string) => {
-          // console.log(this.filterKeys);
           const colMatch = !Object.keys(this.filterKeys).reduce(
             (remove, field) => {
-              // console.log('|| REMOVE => ', remove);
-              // console.log(
-              //   '|| !item[field].toString().toLocaleLowerCase().includes(this.filterKeys[field] => ',
-              //   !item[field]
-              //     .toString()
-              //     .toLocaleLowerCase()
-              //     .includes(this.filterKeys[field])
-              // );
               return (
                 remove ||
                 !item[field]
@@ -83,11 +70,6 @@ export class DataTableDynamicComponent implements OnChanges, OnInit {
             },
             false
           );
-          // if (!colMatch) return false;
-          // console.log(
-          //   '|| COLMATCH ============================================ ||'
-          // );
-          // console.log(colMatch);
           return colMatch;
         };
         this.dataSource.sort = this.sort;
@@ -97,6 +79,7 @@ export class DataTableDynamicComponent implements OnChanges, OnInit {
           ...this.columns.map((c) => c.columnSearch),
           'filter',
         ];
+
         this.columns.forEach((value, index) => {
           this.filterKeys[this.columns[index].columnDef] = '';
         });
@@ -107,37 +90,18 @@ export class DataTableDynamicComponent implements OnChanges, OnInit {
   }
 
   applyFilter(filterValue) {
-    console.log(
-      '|| FILTERVALUE ============================================ ||'
-    );
-    console.log(this.filtersModel);
+    this.dataSource.filter = filterValue.target.value.trim().toLowerCase();
+    this.filteredData.emit(this.dataSource.filteredData);
 
-    // this.filterKeys.forEach((each, ind) => {
-    //   this.filterKeys[this.columns[ind].columnDef] = each || '';
-    // });
-
-    // console.log(this.filterKeys)
-
-    // this.dataSource.filter = filterValue.target.value.trim().toLowerCase();
-    // this.filteredData.emit(this.dataSource.filteredData);
-
-    // if (this.dataSource.paginator) {
-    //   this.dataSource.paginator.firstPage();
-    // }
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
 
     this.dataSource.sort = this.sort;
   }
 
   searchColumns() {
-    console.log(
-      '|| FILTERSMODEL ============================================ ||'
-    );
-    console.log(this.filtersModel);
     this.filtersModel.forEach((each, ind) => {
-      console.log('|| EACH ============================================ ||');
-      console.log(each);
-      console.log('|| IND ============================================ ||');
-      console.log(ind);
       this.filterKeys[this.columns[ind].columnDef] = each || '';
     });
     //Call API with filters
