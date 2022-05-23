@@ -21,7 +21,7 @@ import { TableMenu } from '../../core/interfaces/table-menu';
   templateUrl: './data-table-dynamic.component.html',
   styleUrls: ['./data-table-dynamic.component.scss'],
 })
-export class DataTableDynamicComponent implements OnChanges {
+export class DataTableDynamicComponent implements OnChanges, OnInit {
   @Input() columns: TableColumn[] = [];
   @Input() buttons: TableBtn[] = [];
   @Input() menuButtons: TableMenu[] = [];
@@ -52,14 +52,27 @@ export class DataTableDynamicComponent implements OnChanges {
 
   constructor() {}
 
-  ngOnChanges(changes: SimpleChanges): void {
-    if (this.data) {
-      if (changes.data) {
-        this.dataSource = new MatTableDataSource(this.data);
+  ngOnInit(): void {}
 
+  ngOnChanges(changes: SimpleChanges): void {
+    // console.log(this.dataSource);
+    if (this.data) {
+      // console.log(this.dataSource);
+      if (changes.data) {
+        // console.log(this.dataSource);
+        this.dataSource = new MatTableDataSource(this.data);
         this.dataSource.filterPredicate = (item, filter: string) => {
+          // console.log(this.filterKeys);
           const colMatch = !Object.keys(this.filterKeys).reduce(
             (remove, field) => {
+              // console.log('|| REMOVE => ', remove);
+              // console.log(
+              //   '|| !item[field].toString().toLocaleLowerCase().includes(this.filterKeys[field] => ',
+              //   !item[field]
+              //     .toString()
+              //     .toLocaleLowerCase()
+              //     .includes(this.filterKeys[field])
+              // );
               return (
                 remove ||
                 !item[field]
@@ -70,9 +83,13 @@ export class DataTableDynamicComponent implements OnChanges {
             },
             false
           );
+          // if (!colMatch) return false;
+          // console.log(
+          //   '|| COLMATCH ============================================ ||'
+          // );
+          // console.log(colMatch);
           return colMatch;
         };
-
         this.dataSource.sort = this.sort;
         this.dataSource.paginator = this.paginator;
         this.displayedColumns = [...this.columns.map((c) => c.columnDef)];
@@ -83,7 +100,6 @@ export class DataTableDynamicComponent implements OnChanges {
         this.columns.forEach((value, index) => {
           this.filterKeys[this.columns[index].columnDef] = '';
         });
-
         if (this.buttons.length > 0)
           this.displayedColumns = [...this.displayedColumns, 'actions'];
       }
@@ -91,18 +107,37 @@ export class DataTableDynamicComponent implements OnChanges {
   }
 
   applyFilter(filterValue) {
-    this.dataSource.filter = filterValue.target.value.trim().toLowerCase();
-    this.filteredData.emit(this.dataSource.filteredData);
+    console.log(
+      '|| FILTERVALUE ============================================ ||'
+    );
+    console.log(this.filtersModel);
 
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
+    // this.filterKeys.forEach((each, ind) => {
+    //   this.filterKeys[this.columns[ind].columnDef] = each || '';
+    // });
+
+    // console.log(this.filterKeys)
+
+    // this.dataSource.filter = filterValue.target.value.trim().toLowerCase();
+    // this.filteredData.emit(this.dataSource.filteredData);
+
+    // if (this.dataSource.paginator) {
+    //   this.dataSource.paginator.firstPage();
+    // }
 
     this.dataSource.sort = this.sort;
   }
 
   searchColumns() {
+    console.log(
+      '|| FILTERSMODEL ============================================ ||'
+    );
+    console.log(this.filtersModel);
     this.filtersModel.forEach((each, ind) => {
+      console.log('|| EACH ============================================ ||');
+      console.log(each);
+      console.log('|| IND ============================================ ||');
+      console.log(ind);
       this.filterKeys[this.columns[ind].columnDef] = each || '';
     });
     //Call API with filters

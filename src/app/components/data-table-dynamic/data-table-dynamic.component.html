@@ -57,9 +57,7 @@
     </ng-container>
 
     <ng-container *ngFor="let column of columns; let i = index">
-      <ng-container
-        matColumnDef="{{ column.columnSearch }}"
-      >
+      <ng-container matColumnDef="{{ column.columnSearch }}">
         <th class="header" mat-header-cell *matHeaderCellDef>
           <div
             fxFlexFill
