@@ -1,10 +1,7 @@
 import { Component, VERSION } from '@angular/core';
 import { TableBtn, TableColumn } from './core/interfaces';
 import { TableMenu } from './core/interfaces/table-menu';
-import {
-  createBusinessData,
-  createNewUserData,
-} from './core/mock/functions/mock-data';
+import { createBusinessData } from './core/mock/functions/mock-data';
 import { BusinessData } from './core/mock/interfaces/business-data';
 import { UserData } from './core/mock/interfaces/user-data';
 
@@ -31,7 +28,7 @@ export class AppComponent {
     this.data = createBusinessData();
 
     // build the colums; columnDef: attribute name; header: column title; cell: row text
-    // note that the cell attribute is the same as the columnDef attribute   
+    // note that the cell attribute is the same as the columnDef attribute
 
     this.columns = [
       {
