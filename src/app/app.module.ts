@@ -9,7 +9,6 @@ import { DataTableDynamicComponent } from './components/data-table-dynamic/data-
 import { AppTranslationService, createTranslateLoader, TranslateLanguageLoader } from './core/services/app-translation.service';
 import { HttpClient } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 @NgModule({
   imports: [

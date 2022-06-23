@@ -1,5 +1,5 @@
 import {
-AfterViewInit,
+  AfterViewInit,
   Component,
   EventEmitter,
   Input,
@@ -14,8 +14,10 @@ import { MatIconRegistry } from '@angular/material/icon';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { AppTranslationService } from '../../core/services/app-translation.service';
 import { TableBtn, TableColumn } from '../../core/interfaces';
 import { TableMenu } from '../../core/interfaces/table-menu';
+import { timer } from 'rxjs';
 
 @Component({
   selector: 'app-data-table-dynamic',

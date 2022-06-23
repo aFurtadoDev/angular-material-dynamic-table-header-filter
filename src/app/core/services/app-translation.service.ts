@@ -2,6 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { Observable, of, Subject } from 'rxjs';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
 @Injectable({
   providedIn: 'root',
@@ -85,24 +86,24 @@ export class AppTranslationService {
 export function createTranslateLoader(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
-export class TranslateLanguageLoader implements TranslateLoader {
-  public getTranslation(lang: string): any {
-    // console.log('TranslateLanguageLoader');
-    // Note Dynamic require(variable) will not work. Require is always at compile time
-    switch (lang) {
-      case 'en':
-        return of(require('src/app/assets/i18N/en.json'));
-      // case 'fr':
-      //   return of(require('../assets/locale/fr.json'));
-      // case 'de':
-      //   return of(require('../assets/locale/de.json'));
-      case 'pt':
-        return of(require('src/app/assets/i18N/pt.json'));
-      // case 'ar':
-      //   return of(require('../assets/locale/ar.json'));
-      // case 'ko':
-      //   return of(require('../assets/locale/ko.json'));
-      default:
-    }
-  }
-}
+// export class TranslateLanguageLoader implements TranslateLoader {
+//   public getTranslation(lang: string): any {
+//     // console.log('TranslateLanguageLoader');
+//     // Note Dynamic require(variable) will not work. Require is always at compile time
+//     switch (lang) {
+//       case 'en':
+//         return of(require('src/app/assets/i18N/en.json'));
+//       // case 'fr':
+//       //   return of(require('../assets/locale/fr.json'));
+//       // case 'de':
+//       //   return of(require('../assets/locale/de.json'));
+//       case 'pt':
+//         return of(require('src/app/assets/i18N/pt.json'));
+//       // case 'ar':
+//       //   return of(require('../assets/locale/ar.json'));
+//       // case 'ko':
+//       //   return of(require('../assets/locale/ko.json'));
+//       default:
+//     }
+//   }
+// }
