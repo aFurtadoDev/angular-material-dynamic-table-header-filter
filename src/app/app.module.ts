@@ -6,6 +6,8 @@ import { AppComponent } from './app.component';
 import { AngularMaterialModule } from './core/angular-material/angular-material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DataTableDynamicComponent } from './components/data-table-dynamic/data-table-dynamic.component';
+import { AppTranslationService, TranslateLanguageLoader } from './core/services/app-translation.service';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -14,8 +16,15 @@ import { DataTableDynamicComponent } from './components/data-table-dynamic/data-
     FormsModule,
     ReactiveFormsModule,
     AngularMaterialModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useClass: TranslateLanguageLoader,
+      },
+    }),
   ],
   declarations: [AppComponent, DataTableDynamicComponent],
   bootstrap: [AppComponent],
+  providers: [AppTranslationService]
 })
 export class AppModule {}

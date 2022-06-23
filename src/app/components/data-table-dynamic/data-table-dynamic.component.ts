@@ -1,4 +1,5 @@
 import {
+AfterViewInit,
   Component,
   EventEmitter,
   Input,
@@ -8,6 +9,8 @@ import {
   SimpleChanges,
   ViewChild,
 } from '@angular/core';
+import { FormControl, FormGroup } from '@angular/forms';
+import { MatIconRegistry } from '@angular/material/icon';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
@@ -19,20 +22,42 @@ import { TableMenu } from '../../core/interfaces/table-menu';
   templateUrl: './data-table-dynamic.component.html',
   styleUrls: ['./data-table-dynamic.component.scss'],
 })
-export class DataTableDynamicComponent implements OnChanges, OnInit {
-  @Input() columns: TableColumn[] = [];
+export class DataTableDynamicComponent
+  implements OnChanges, OnInit, AfterViewInit
+{
+  formGroup: FormGroup = new FormGroup({});
+  columns: TableColumn[] = [];
+
+  expandedElement: TableColumn | null = null;
+
+  @Input() toolbar = true;
+  @Input() toolbarTitle = '';
+  @Input('columns') set _columns(value) {
+    this.columns = value;
+    value.forEach((x) => {
+      this.formGroup.addControl(x.columnDef, new FormControl());
+    });
+    this.formGroup.addControl('_general', new FormControl());
+    this.formGroup.valueChanges.subscribe((res) => {
+      this.dataSource.filter = JSON.stringify(res);
+    });
+  }
   @Input() buttons: TableBtn[] = [];
   @Input() menuButtons: TableMenu[] = [];
   @Input() data: any[] = [];
-  @Input() filter: boolean = false;
-  @Input() filterPlaceholder: string = 'Filter';
-  @Input() columnsFilter: boolean = false;
+  @Input() filterGlobal = false;
+  @Input() filterGlobalLabel = 'Filter';
+  @Input() filterGlobalPlaceholder = 'Filter...';
+  @Input() filterColumns = true;
+  @Input() filterColumnsLabel = 'Type to search';
+  @Input() filterColumnsPlaceholder = 'Type to search...';
   @Input() footer: string = null;
   @Input() pagination: number[] = [];
   @Input() pageSize: number;
-  @Input() tableMinWidth: number = 500;
+  @Input() tableMinWidth = 500;
   @Output() filteredData = new EventEmitter<any[]>();
   @Output() buttonClick = new EventEmitter<string[]>();
+  @Output() modalButtonClick = new EventEmitter();
 
   dataSource: MatTableDataSource<any>;
   displayedColumns: string[];
@@ -43,38 +68,65 @@ export class DataTableDynamicComponent implements OnChanges, OnInit {
   filtersModel = [];
   filterKeys = {};
 
-  toggleFilters = true;
+  toggleFilters = false;
 
-  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
-  @ViewChild(MatSort, { static: true }) sort: MatSort;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
 
-  constructor() {}
+  gT = (key: string | Array<string>, interpolateParams?: object) =>
+    this.translationService.getTranslation(key, interpolateParams);
+
+  colSpan: number = 10;
+
+  constructor(
+    private translationService: AppTranslationService,
+    matIconRegistry: MatIconRegistry
+  ) {
+    matIconRegistry.registerFontClassAlias('fontawesome', 'fa');
+  }
 
   ngOnInit(): void {}
 
+  ngAfterViewInit(): void {
+    this.matTableSort();
+  }
+
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(changes);
     if (this.data) {
       if (changes.data) {
         this.dataSource = new MatTableDataSource(this.data);
-        this.dataSource.filterPredicate = (item, filter: string) => {
-          const colMatch = !Object.keys(this.filterKeys).reduce(
-            (remove, field) => {
-              return (
-                remove ||
-                !item[field]
-                  .toString()
-                  .toLocaleLowerCase()
-                  .includes(this.filterKeys[field])
-              );
-            },
-            false
-          );
+
+        this.dataSource.filterPredicate = (data: any, filter: string) => {
+          const filterData = JSON.parse(filter);
+          let colMatch = true;
+          if (filterData._general) {
+            const search = filterData._general.toLowerCase();
+            colMatch = false;
+            // tslint:disable-next-line: forin
+            for (const prop in data) {
+              colMatch =
+                colMatch ||
+                ('' + data[prop]).toLowerCase().indexOf(search) >= 0;
+            }
+          }
+          Object.keys(filterData).forEach((x) => {
+            if (x !== '_general' && filterData[x]) {
+              if (colMatch)
+                colMatch =
+                  ('' + data[x])
+                    .toLowerCase()
+                    .indexOf(filterData[x].toLowerCase()) >= 0;
+            }
+          });
           return colMatch;
         };
-        this.dataSource.sort = this.sort;
-        this.dataSource.paginator = this.paginator;
-        this.displayedColumns = [...this.columns.map((c) => c.columnDef)];
+
+        this.matTableSort();
+
+        this.displayedColumns = [
+          'expand',
+          ...this.columns.map((c) => c.columnDef),
+        ];
         this.displayedColumnsSearch = [
           ...this.columns.map((c) => c.columnSearch),
           'filter',
@@ -83,44 +135,41 @@ export class DataTableDynamicComponent implements OnChanges, OnInit {
         this.columns.forEach((value, index) => {
           this.filterKeys[this.columns[index].columnDef] = '';
         });
+
         if (this.buttons.length > 0)
           this.displayedColumns = [...this.displayedColumns, 'actions'];
       }
     }
   }
 
-  applyFilter(filterValue) {
-    this.dataSource.filter = filterValue.target.value.trim().toLowerCase();
-    this.filteredData.emit(this.dataSource.filteredData);
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
-
-    this.dataSource.sort = this.sort;
+  clearFilters(): void {
+    this.formGroup.reset();
   }
 
-  searchColumns() {
-    this.filtersModel.forEach((each, ind) => {
-      this.filterKeys[this.columns[ind].columnDef] = each || '';
+  matTableSort(): void {
+    timer().subscribe(() => {
+      this.dataSource.sort = this.sort;
+
+      // console.log(this.columns.filter((x) => x.activeSort === true).map(m => m.columnDef).toString());
+
+      const directionSort = `${this.columns
+        .filter((x) => x.activeSort === true)
+        .map((m) => m.directionSort)
+        .toString()}`;
+      // console.log(directionSort === 'asc' ? 'asc' : 'desc');
+
+      const sortState: Sort = {
+        active: `${this.columns
+          .filter((x) => x.activeSort === true)
+          .map((m) => m.columnDef)
+          .toString()}`,
+        direction: directionSort === 'asc' ? 'asc' : 'desc',
+      };
+      this.dataSource.sort.active = sortState.active;
+      this.dataSource.sort.direction = sortState.direction;
+      this.sort.sortChange.emit(sortState);
+
+      this.dataSource.paginator = this.paginator;
     });
-    //Call API with filters
-    this.dataSource.filter = JSON.stringify(this.filterKeys);
-    this.filteredData.emit(this.dataSource.filteredData);
-
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
-    }
-
-    this.dataSource.sort = this.sort;
-  }
-
-  clearFilters() {
-    this.filtersModel = [];
-    this.columns.forEach((value, index) => {
-      this.filterKeys[this.columns[index].columnDef] = '';
-    });
-    //Call API without filters
-    this.searchColumns();
   }
 }
