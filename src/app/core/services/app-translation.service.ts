@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { TranslateLoader, TranslateService } from '@ngx-translate/core';
 import { Observable, of, Subject } from 'rxjs';
@@ -81,6 +82,9 @@ export class AppTranslationService {
   }
 }
 
+export function createTranslateLoader(http: HttpClient) {
+  return new TranslateHttpLoader(http, './assets/i18n/', '.json');
+}
 export class TranslateLanguageLoader implements TranslateLoader {
   public getTranslation(lang: string): any {
     // console.log('TranslateLanguageLoader');
