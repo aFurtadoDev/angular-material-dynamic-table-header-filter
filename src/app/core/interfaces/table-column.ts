@@ -3,4 +3,7 @@ export interface TableColumn {
   columnSearch: string;
   header: string;
   cell: (any) => string;
+  sort: boolean;
+  directionSort: string;
+  activeSort: boolean;
 }

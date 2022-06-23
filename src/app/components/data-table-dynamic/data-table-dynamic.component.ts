@@ -12,7 +12,7 @@ import {
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatIconRegistry } from '@angular/material/icon';
 import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { AppTranslationService } from '../../core/services/app-translation.service';
 import { TableBtn, TableColumn } from '../../core/interfaces';
@@ -149,7 +149,7 @@ export class DataTableDynamicComponent
   }
 
   matTableSort(): void {
-    timer().subscribe(() => {
+    timer(0).subscribe(() => {
       this.dataSource.sort = this.sort;
 
       // console.log(this.columns.filter((x) => x.activeSort === true).map(m => m.columnDef).toString());
