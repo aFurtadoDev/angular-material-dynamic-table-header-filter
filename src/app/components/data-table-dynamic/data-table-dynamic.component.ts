@@ -63,7 +63,7 @@ export class DataTableDynamicComponent
   }
   @Input() buttons: TableBtn[] = [];
   @Input() menuButtons: TableMenu[] = [];
-  @Input() data: any[] = [];
+  @Input() data: any;
   @Input() filterGlobal = false;
   @Input() filterGlobalLabel = 'Filter';
   @Input() filterGlobalPlaceholder = 'Filter...';
@@ -119,9 +119,10 @@ export class DataTableDynamicComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (this.data) {
+    console.log(this.data)
+    if (this.data['data']) {
       if (changes.data) {
-        this.dataSource = new MatTableDataSource<any>(this.data);
+        this.dataSource = new MatTableDataSource<any>(this.data['data']);
 
         this.dataSource.filterPredicate = (data?: any, filter?: string) => {
           const filterData = JSON.parse(filter);

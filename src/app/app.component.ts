@@ -3,6 +3,7 @@ import { TableBtn, TableColumn } from './core/interfaces';
 import { TableMenu } from './core/interfaces/table-menu';
 import { createBusinessData } from './core/mock/functions/mock-data';
 import { BusinessData } from './core/mock/interfaces/business-data';
+import { IBusinessData } from './core/mock/interfaces/i-business-data';
 import { UserData } from './core/mock/interfaces/user-data';
 
 @Component({
@@ -17,7 +18,7 @@ export class AppComponent {
   columns: TableColumn[]; // this will define what you pass over to the table
   buttons: TableBtn[]; // this will define what you pass over to the table
   menuButtons: TableMenu[]; // this will define what you pass over to the table
-  data: BusinessData[]; // this is example data but you can use any object to pass to the table
+  data: IBusinessData; // this is example data but you can use any object to pass to the table
   totalVolume: number = 0; // this is an example field used to show how you can access filtered data from the table
   totalRides: number = 0;
   footer: string = ''; // in this example I'm using a dynamic footer which changes with the filtered data

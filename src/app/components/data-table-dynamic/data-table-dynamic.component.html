@@ -1,4 +1,4 @@
-<form *ngIf="formGroup" [formGroup]="formGroup" class="dynamic-data-table">
+<form [formGroup]="formGroup" class="dynamic-data-table">
   <mat-toolbar color="primary" class="mat-elevation-z3" *ngIf="toolbar">
     <span *ngIf="toolbarTitle" class="toolbarTitle">{{
       toolbarTitle | translate
@@ -220,13 +220,15 @@
         </mat-progress-spinner>
       </mat-card>
     </div>
-
+    <!-- page: number;
+    totalPages: number;
+    totalCount: number; -->
+    {{dataSource['totalPages']}}
     <mat-paginator
       [hidden]="!pageSizeOptions"
-      [length]="21"
       (page)="pageChange.emit($event)"
-      [pageSizeOptions]="pageSizeOptions"
-      [pageSize]="pageSize"
+      [length]="121"
+    
       showFirstLastButtons
       [ngStyle]="{ 'min-width': +tableMinWidth + 'px' }"
     ></mat-paginator>

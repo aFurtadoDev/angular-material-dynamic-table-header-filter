@@ -2,6 +2,7 @@
 <div class="row">
   <div class="col-12 pt-3">{{ introText }}</div>
 </div>
+<mat-card>
 <app-data-table-dynamic
   [toolbarTitle]="'Dynamic Table'"
   [toolbar]="true"
@@ -26,6 +27,8 @@
   (modalButtonClick)="add()"
   (pageChange)="pg()"
 ></app-data-table-dynamic>
+</mat-card>
+
 <!-- columns: required,
                      data: required
                      filter: not required, if null => no filter
