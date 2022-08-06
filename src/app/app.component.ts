@@ -22,10 +22,14 @@ export class AppComponent {
   totalRides: number = 0;
   footer: string = ''; // in this example I'm using a dynamic footer which changes with the filtered data
 
+  isLoadingResults = false;
+  isLoadingResultsFilter = false;
+
   constructor() {
     // Create 100 userdata objects
     // this.data = Array.from({ length: 100 }, (_, k) => createNewUserData(k + 1));
     this.data = createBusinessData();
+    console.log(this.data);
 
     // build the colums; columnDef: attribute name; header: column title; cell: row text
     // note that the cell attribute is the same as the columnDef attribute
@@ -36,36 +40,54 @@ export class AppComponent {
         columnSearch: 'idSearch',
         header: 'Id',
         cell: (element: BusinessData) => `${element.id}`,
+        sort: true,
+        directionSort: 'asc',
+        activeSort: true,
       },
       {
         columnDef: 'num_ro',
         columnSearch: 'num_roSearch',
         header: 'RO',
         cell: (element: BusinessData) => `${element.num_ro}`,
+        sort: true,
+        directionSort: 'asc',
+        activeSort: true,
       },
       {
         columnDef: 'identificacao',
         columnSearch: 'identificacaoSearch',
         header: 'Identificacao',
         cell: (element: BusinessData) => `${element.identificacao} m³`,
+        sort: true,
+        directionSort: 'asc',
+        activeSort: true,
       },
       {
         columnDef: 'nome_finalidade',
         columnSearch: 'nome_finalidadeSearch',
         header: 'Finalidade',
         cell: (element: BusinessData) => `${element.nome_finalidade}`,
+        sort: true,
+        directionSort: 'asc',
+        activeSort: true,
       },
       {
         columnDef: 'id_estado',
         columnSearch: 'id_estadoSearch',
         header: 'Estado',
         cell: (element: BusinessData) => `${element.id_estado}`,
+        sort: true,
+        directionSort: 'asc',
+        activeSort: true,
       },
       {
         columnDef: 'nome_tipo',
         columnSearch: 'nome_tipoSearch',
         header: 'Tipo',
         cell: (element: BusinessData) => `${element.nome_tipo}`,
+        sort: true,
+        directionSort: 'asc',
+        activeSort: true,
       },
     ];
 
@@ -86,6 +108,7 @@ export class AppComponent {
         payload: (element: UserData) => `${element.id}`,
         action: 'add',
         description: 'Include',
+        disable: false,
       },
       {
         styleClass: 'btn btn-primary px-2',
@@ -93,6 +116,7 @@ export class AppComponent {
         payload: (element: UserData) => `${element.id}`,
         action: 'edit',
         description: 'Alter',
+        disable: false,
       },
     ];
 
@@ -119,4 +143,6 @@ export class AppComponent {
     console.log(result);
     this.introText = `action: ${result[0]}, payload ${result[1]}`;
   }
+  add() {}
+  pg() {}
 }

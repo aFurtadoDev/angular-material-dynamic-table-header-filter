@@ -15,7 +15,6 @@
   [filterColumns]="true"
   [filterColumnsLabel]="''"
   [filterColumnsPlaceholder]="'Search'"
-  [expandDetail]="false"
   [footer]="footer"
   [pageSizeOptions]="[10, 25, 50, 100]"
   [pageSize]="10"
@@ -24,9 +23,8 @@
   [isLoadingResults]="isLoadingResults"
   (filteredData)="applyFilter($event)"
   (buttonClick)="buttonClick($event)"
-  (rowDblClick)="rowDblClick($event)"
   (modalButtonClick)="add()"
-  (pageChange)="loadDatasource($event)"
+  (pageChange)="pg()"
 ></app-data-table-dynamic>
 <!-- columns: required,
                      data: required

@@ -6,8 +6,11 @@ import { AppComponent } from './app.component';
 import { AngularMaterialModule } from './core/angular-material/angular-material.module';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { DataTableDynamicComponent } from './components/data-table-dynamic/data-table-dynamic.component';
-import { AppTranslationService, createTranslateLoader, TranslateLanguageLoader } from './core/services/app-translation.service';
-import { HttpClient } from '@angular/common/http';
+import {
+  AppTranslationService,
+  createTranslateLoader,
+} from './core/services/app-translation.service';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
 
 @NgModule({
@@ -15,12 +18,13 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
     BrowserModule,
     BrowserAnimationsModule,
     FormsModule,
+    HttpClientModule,
     ReactiveFormsModule,
     AngularMaterialModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: (createTranslateLoader),
+        useFactory: createTranslateLoader,
         deps: [HttpClient],
       },
       defaultLanguage: 'en-US',
@@ -28,6 +32,6 @@ import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
   ],
   declarations: [AppComponent, DataTableDynamicComponent],
   bootstrap: [AppComponent],
-  providers: [AppTranslationService]
+  providers: [AppTranslationService, ],
 })
 export class AppModule {}

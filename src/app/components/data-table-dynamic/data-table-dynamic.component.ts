@@ -70,7 +70,7 @@ export class DataTableDynamicComponent
   @Input() filterColumns = true;
   @Input() filterColumnsLabel = 'Type to search';
   @Input() filterColumnsPlaceholder = 'Type to search...';
-  @Input() expandDetail = false;
+  // @Input() expandDetail = false;
   @Input() footer: string = null;
   // @Input() length: number;
   @Input() pageSizeOptions: number[] = [];
@@ -165,15 +165,15 @@ export class DataTableDynamicComponent
         if (this.buttons.length > 0)
           this.displayedColumns = [...this.displayedColumns, 'actions'];
 
-        if (this.expandDetail) {
-          this.displayedColumns = ['expand', ...this.displayedColumns];
-          this.displayedColumnsSearch = [
-            'expand',
-            ...this.displayedColumnsSearch,
-          ];
+        // if (this.expandDetail) {
+        //   this.displayedColumns = ['expand', ...this.displayedColumns];
+        //   this.displayedColumnsSearch = [
+        //     'expand',
+        //     ...this.displayedColumnsSearch,
+        //   ];
 
-          this.dataSource.paginator = this.paginator;
-        }
+        //   this.dataSource.paginator = this.paginator;
+        // }
         // console.log(this.displayedColumns)
         // console.log(this.displayedColumnsSearch)
       }
