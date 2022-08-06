@@ -1,66 +1,39 @@
 <form *ngIf="formGroup" [formGroup]="formGroup" class="dynamic-data-table">
-  <mat-toolbar color="primary" class="mat-elevation-z3" *ngIf="toolbar">
-    <span *ngIf="toolbarTitle" class="toolbarTitle">{{
-      toolbarTitle | translate
-    }}</span>
-    <span class="spacer"></span>
-    <mat-form-field class="full-width search" *ngIf="filterGlobal">
-      <mat-label>{{ filterGlobalLabel | translate }}</mat-label>
-      <input
-        matInput
-        formControlName="_general"
-        [(ngModel)]="filterValue"
-        placeholder="{{ filterGlobalPlaceholder | translate }}"
-      />
-      <button
-        *ngIf="!filterValue"
-        matSuffix
-        mat-icon-button
-        aria-label="Search"
-      >
-        <mat-icon>search</mat-icon>
-      </button>
-      <button
-        *ngIf="filterValue"
-        matSuffix
-        mat-icon-button
-        aria-label="Clear"
-        (click)="clearFilters()"
-      >
-        <mat-icon>close</mat-icon>
-      </button>
-    </mat-form-field>
-    <span class="spacer"></span>
 
-    <button
-      mat-mini-fab
-      color="success"
-      class="success"
-      aria-label="Example icon button with a menu icon"
-      (click)="this.modalButtonClick.emit()"
-    >
-      <mat-icon>add</mat-icon>
+<mat-toolbar color="primary" class="mat-elevation-z3" *ngIf="toolbar">
+  <span *ngIf="toolbarTitle" class="toolbarTitle">{{ toolbarTitle | translate }}</span>
+  <span class="spacer"></span>
+  <mat-form-field class="full-width search" *ngIf="filterGlobal">
+    <mat-label>{{ filterGlobalLabel | translate }}</mat-label>
+    <input matInput formControlName="_general" [(ngModel)]="filterValue"
+      placeholder="{{ filterGlobalPlaceholder | translate }}" />
+    <button *ngIf="!filterValue" matSuffix mat-icon-button aria-label="Search">
+      <mat-icon>search</mat-icon>
     </button>
-  </mat-toolbar>
+    <button *ngIf="filterValue" matSuffix mat-icon-button aria-label="Clear" (click)="clearFilters()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </mat-form-field>
+  <span class="spacer"></span>
 
-  <div class="mat-elevation-z8">
-    <table
-      mat-table
-      [dataSource]="dataSource"
-      matSort
-      [ngStyle]="{ 'min-width': +tableMinWidth + 'px' }"
-      multiTemplateDataRows
-    >
+  <button mat-mini-fab color="success" class="success" aria-label="Example icon button with a menu icon"
+    (click)="this.modalButtonClick.emit()">
+    <mat-icon>add</mat-icon>
+  </button>
+
+</mat-toolbar>
+
+<div class="">
+
+
+  <div class="stick-container">
+    <table mat-table [dataSource]="dataSource" matSort matSortDisableClear
+      [ngStyle]="{ 'min-width': + tableMinWidth + 'px' }" multiTemplateDataRows>
+
       <!-- Table header -->
       <ng-container *ngFor="let column of columns">
         <ng-container matColumnDef="{{ column.columnDef }}">
-          <th
-            class="header"
-            mat-header-cell
-            *matHeaderCellDef
-            mat-sort-header
-            [disabled]="!column.sort"
-          >
+          <th class="header" mat-header-cell *matHeaderCellDef mat-sort-header [disabled]="!column.sort">
             <div fxFlexFill>
               {{ column.header | translate }}
             </div>
@@ -73,26 +46,14 @@
       <ng-container *ngIf="buttons.length >= 0">
         <ng-container matColumnDef="actions">
           <th mat-header-cell *matHeaderCellDef>
-            <button
-              *ngIf="filterColumns"
-              mat-icon-button
-              matTooltip="Toggle Filters"
-              (click)="toggleFilters = !toggleFilters"
-            >
+            <button *ngIf="filterColumns" mat-icon-button matTooltip="Toggle Filters"
+              (click)="toggleFilters = !toggleFilters">
               <mat-icon matSuffix>search</mat-icon>
             </button>
           </th>
-          <td
-            mat-cell
-            *matCellDef="let row"
-            [ngStyle]="{ 'min-width': 'calc(55px * ' + buttons.length + ')' }"
-          >
+          <td mat-cell *matCellDef="let row" [ngStyle]="{ 'min-width': 'calc(55px * ' + buttons.length + ')' }">
             <div class="btn-group" *ngFor="let button of buttons">
-              <button
-                mat-icon-button
-                [matMenuTriggerFor]="menu"
-                [matMenuTriggerData]="{ data: row }"
-              >
+              <button mat-icon-button [matMenuTriggerFor]="menu" [matMenuTriggerData]="{ data: row }">
                 <mat-icon>more_vert</mat-icon>
               </button>
             </div>
@@ -105,17 +66,10 @@
         <ng-container *ngFor="let column of columns; let i = index">
           <ng-container matColumnDef="{{ column.columnSearch }}">
             <th class="header" mat-header-cell *matHeaderCellDef>
-              <div
-                fxFlexFill
-                class="filters-container"
-                [class.animate]="toggleFilters"
-              >
+              <div fxFlexFill class="filters-container" [class.animate]="toggleFilters">
                 <mat-form-field *ngIf="i >= 0" appearance="outline">
-                  <input
-                    matInput
-                    placeholder="{{ filterColumnsPlaceholder | translate }}"
-                    [formControlName]="column.columnDef"
-                  />
+                  <input matInput placeholder="{{ filterColumnsPlaceholder | translate }}"
+                    [formControlName]="column.columnDef" />
                   <!-- <mat-icon matSuffix>search</mat-icon> -->
                 </mat-form-field>
               </div>
@@ -129,15 +83,38 @@
       <ng-container *ngIf="filterColumns" matColumnDef="filter">
         <th mat-header-cell *matHeaderCellDef class="filterHeaderCell">
           <div class="filters-container" [class.animate]="toggleFilters">
-            <button
-              mat-icon-button
-              matTooltip="Clear Filters"
-              (click)="clearFilters()"
-            >
+            <button mat-icon-button matTooltip="Clear Filters" (click)="clearFilters()">
               <mat-icon>search_off</mat-icon>
             </button>
           </div>
         </th>
+      </ng-container>
+
+      <ng-container *ngIf="expandDetail" matColumnDef="expand">
+        <th mat-header-cell *matHeaderCellDef aria-label="row actions">
+          <div class="filters-container"></div>
+        </th>
+        <td mat-cell *matCellDef="let element">
+          <button mat-icon-button aria-label="expand row"
+            (click)="(expandedElement = expandedElement === element ? null : element); $event.stopPropagation()">
+            <mat-icon *ngIf="expandedElement !== element">keyboard_arrow_down</mat-icon>
+            <mat-icon *ngIf="expandedElement === element">keyboard_arrow_up</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+      <ng-container matColumnDef="expandedDetail">
+        <td mat-cell *matCellDef="let element" [attr.colspan]="displayedColumns.length">
+          <div class="element-detail" [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+
+            <ng-container [ngTemplateOutlet]="tableTemplate"></ng-container>
+            <!-- <div class="element-description">
+
+              <span class="element-description-attribution"> -- Wikipedia </span>
+            </div> -->
+          </div>
+        </td>
       </ng-container>
 
       <!-- Disclaimer column - with nullable approach -->
@@ -148,70 +125,68 @@
       </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;" (dblclick)="this.rowDblClick.emit(row)"
+        class="element-row" [class.expanded-row]="expandedElement === row">
+      </tr>
+      <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-row"></tr>
 
       <ng-container *ngIf="filterColumns">
-        <tr
-          mat-header-row
-          *matHeaderRowDef="displayedColumnsSearch"
-          class="mat-header-filter"
-        ></tr>
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsSearch; sticky: true" class="mat-header-filter"></tr>
         <!-- class="no-default-height" -->
       </ng-container>
-
-      <!-- <tr mat-header-row *matHeaderRowDef="searchColumn"></tr> -->
 
       <!-- Row shown when there is no matching data. -->
       <tr class="mat-row no-data" *matNoDataRow>
         <td class="mat-cell" [attr.colspan]="displayedColumns.length">
           <div *ngIf="filterValue">
-            {{ 'components.dynamic-data-table.filter-no-record' | translate }}
+            {{'components.dynamic-data-table.filter-no-record'| translate}}
             <!-- Nenhum registro retornado pela consulta. Filtro: [ {{filterValue}} ] ... -->
           </div>
           <div *ngIf="!filterValue">
-            {{ 'components.dynamic-data-table.no-record' | translate }}
+            {{'components.dynamic-data-table.no-record'| translate}}
           </div>
         </td>
       </tr>
 
       <ng-container *ngIf="footer">
         <!-- Make footer nullable -->
-        <tr
-          mat-footer-row
-          *matFooterRowDef="['disclaimer']"
-          class="second-footer-row"
-        ></tr>
+        <tr mat-footer-row *matFooterRowDef="['disclaimer']" class="second-footer-row"></tr>
       </ng-container>
     </table>
 
-    <mat-paginator
-      *ngIf="pagination"
-      [pageSizeOptions]="pagination"
-      [pageSize]="pageSize"
-      showFirstLastButtons
-      [ngStyle]="{ 'min-width': +tableMinWidth + 'px' }"
-    ></mat-paginator>
-
-    <mat-menu #menu="matMenu">
-      <ng-template matMenuContent let-data="data">
-        <div *ngFor="let button of menuButtons">
-          <button
-            mat-menu-item
-            (click)="
-              this.buttonClick.emit([button.action, button.payload(data)])
-            "
-            [disabled]="button.disable"
-          >
-            <!-- <mat-icon>{{ button.icon }}</mat-icon> -->
-            <mat-icon
-              fontSet="fa"
-              fontIcon="{{ button.icon }}"
-              fxLayoutAlign="start center"
-            ></mat-icon>
-            {{ button.description | translate }}
-          </button>
-        </div>
-      </ng-template>
-    </mat-menu>
+    <div class="loading-shade" *ngIf="isLoadingResultsFilter">
+      <mat-spinner *ngIf="isLoadingResultsFilter"></mat-spinner>
+    </div>
+    <mat-card class="spinnerLoading" *ngIf="isLoadingResults"
+      style="box-shadow: none; display: flex; justify-content: center; align-items: center;">
+      <mat-progress-spinner color="primary" mode="indeterminate">
+      </mat-progress-spinner>
+    </mat-card>
   </div>
+
+  <mat-paginator [hidden]="!pageSizeOptions"
+    [length]="21"
+    (page)="pageChange.emit($event)"
+    (pageSize)="pageSizeChange.emit($event)"
+    [pageSizeOptions]="pageSizeOptions"
+    [pageSize]="pageSize"
+    showFirstLastButtons
+    [ngStyle]="{ 'min-width': +tableMinWidth + 'px' }"></mat-paginator>
+
+  <mat-menu #menu="matMenu">
+    <ng-template matMenuContent let-data="data">
+      <div *ngFor="let button of menuButtons">
+        <!-- {{button.disable(data)}} -->
+        <button mat-menu-item (click)="this.buttonClick.emit([button.action, button.payload(data)])"
+          [disabled]="button.disable">
+          <!-- <mat-icon>{{ button.icon }}</mat-icon> -->
+          <mat-icon fontSet="fa" fontIcon="{{ button.icon }}" fxLayoutAlign="start center"></mat-icon>
+          {{ button.description | translate }}
+        </button>
+      </div>
+    </ng-template>
+  </mat-menu>
+
+</div>
+
 </form>

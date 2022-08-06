@@ -4,4 +4,5 @@ export interface TableMenu {
   payload: (any) => string;
   action: string;
   description: string;
+  disable: boolean;
 }

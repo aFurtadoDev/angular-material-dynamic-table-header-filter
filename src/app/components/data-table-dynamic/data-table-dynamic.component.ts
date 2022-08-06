@@ -23,14 +23,22 @@ import { timer } from 'rxjs';
   selector: 'app-data-table-dynamic',
   templateUrl: './data-table-dynamic.component.html',
   styleUrls: ['./data-table-dynamic.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition(
+        'expanded <=> collapsed',
+        animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')
+      ),
+    ]),
+  ],
 })
 export class DataTableDynamicComponent
   implements OnChanges, OnInit, AfterViewInit
 {
   formGroup: FormGroup = new FormGroup({});
   columns: TableColumn[] = [];
-
-  expandedElement: TableColumn | null = null;
 
   @Input() toolbar = true;
   @Input() toolbarTitle = '';
@@ -39,6 +47,7 @@ export class DataTableDynamicComponent
     value.forEach((x) => {
       this.formGroup.addControl(x.columnDef, new FormControl());
     });
+
     this.formGroup.addControl('_general', new FormControl());
     this.formGroup.valueChanges.subscribe((res) => {
       this.dataSource.filter = JSON.stringify(res);
@@ -53,20 +62,28 @@ export class DataTableDynamicComponent
   @Input() filterColumns = true;
   @Input() filterColumnsLabel = 'Type to search';
   @Input() filterColumnsPlaceholder = 'Type to search...';
+  @Input() expandDetail = false;
   @Input() footer: string = null;
-  @Input() pagination: number[] = [];
+  // @Input() length: number;
+  @Input() pageSizeOptions: number[] = [];
   @Input() pageSize: number;
   @Input() tableMinWidth = 500;
+  @Input() isLoadingResults = false;
+  @Input() isLoadingResultsFilter = false;
   @Output() filteredData = new EventEmitter<any[]>();
   @Output() buttonClick = new EventEmitter<string[]>();
+  @Output() rowDblClick = new EventEmitter();
   @Output() modalButtonClick = new EventEmitter();
+  @Output() pageChange = new EventEmitter<PageEvent>();
 
-  dataSource: MatTableDataSource<any>;
+  @Input() tableTemplate: TemplateRef<any>;
+
+  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>();
   displayedColumns: string[];
   displayedColumnsSearch: string[];
 
   headers: string[] = this.columns.map((x) => x.columnDef);
-  headersFilters = this.headers.map((x, i) => x + '_' + i);
+  // headersFilters = this.headers.map((x, i) => x + '_' + i);
   filtersModel = [];
   filterKeys = {};
 
@@ -77,8 +94,6 @@ export class DataTableDynamicComponent
 
   gT = (key: string | Array<string>, interpolateParams?: object) =>
     this.translationService.getTranslation(key, interpolateParams);
-
-  colSpan: number = 10;
 
   constructor(
     private translationService: AppTranslationService,
@@ -96,9 +111,9 @@ export class DataTableDynamicComponent
   ngOnChanges(changes: SimpleChanges): void {
     if (this.data) {
       if (changes.data) {
-        this.dataSource = new MatTableDataSource(this.data);
+        this.dataSource = new MatTableDataSource<any>(this.data);
 
-        this.dataSource.filterPredicate = (data: any, filter: string) => {
+        this.dataSource.filterPredicate = (data?: any, filter?: string) => {
           const filterData = JSON.parse(filter);
           let colMatch = true;
           if (filterData._general) {
@@ -125,14 +140,13 @@ export class DataTableDynamicComponent
 
         this.matTableSort();
 
-        this.displayedColumns = [
-          'expand',
-          ...this.columns.map((c) => c.columnDef),
-        ];
+        this.displayedColumns = [...this.columns.map((c) => c.columnDef)];
         this.displayedColumnsSearch = [
           ...this.columns.map((c) => c.columnSearch),
           'filter',
         ];
+
+        // console.log(this.displayedColumnsSearch);
 
         this.columns.forEach((value, index) => {
           this.filterKeys[this.columns[index].columnDef] = '';
@@ -140,6 +154,18 @@ export class DataTableDynamicComponent
 
         if (this.buttons.length > 0)
           this.displayedColumns = [...this.displayedColumns, 'actions'];
+
+        if (this.expandDetail) {
+          this.displayedColumns = ['expand', ...this.displayedColumns];
+          this.displayedColumnsSearch = [
+            'expand',
+            ...this.displayedColumnsSearch,
+          ];
+
+          this.dataSource.paginator = this.paginator;
+        }
+        // console.log(this.displayedColumns)
+        // console.log(this.displayedColumnsSearch)
       }
     }
   }
@@ -150,7 +176,9 @@ export class DataTableDynamicComponent
 
   matTableSort(): void {
     timer(0).subscribe(() => {
-      this.dataSource.sort = this.sort;
+      this.dataSource.sort = this.sort ? this.sort : null;
+
+      this.dataSource.paginator = this.paginator;
 
       // console.log(this.columns.filter((x) => x.activeSort === true).map(m => m.columnDef).toString());
 
@@ -158,7 +186,6 @@ export class DataTableDynamicComponent
         .filter((x) => x.activeSort === true)
         .map((m) => m.directionSort)
         .toString()}`;
-      // console.log(directionSort === 'asc' ? 'asc' : 'desc');
 
       const sortState: Sort = {
         active: `${this.columns
@@ -167,11 +194,10 @@ export class DataTableDynamicComponent
           .toString()}`,
         direction: directionSort === 'asc' ? 'asc' : 'desc',
       };
+
       this.dataSource.sort.active = sortState.active;
       this.dataSource.sort.direction = sortState.direction;
       this.sort.sortChange.emit(sortState);
-
-      this.dataSource.paginator = this.paginator;
     });
   }
 }

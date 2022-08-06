@@ -17,6 +17,32 @@
   (filteredData)="applyFilter($event)"
   (buttonClick)="buttonClick($event)"
 >
+  <app-dynamic-data-table
+    [toolbarTitle]="'Dynamic Table'"
+    [toolbar]="true"
+    [columns]="columns"
+    [buttons]="buttons"
+    [menuButtons]="menuButtons"
+    [data]="data"
+    [filterGlobal]="true"
+    [filterGlobalLabel]="'Search'"
+    [filterGlobalPlaceholder]="'Search'"
+    [filterColumns]="true"
+    [filterColumnsLabel]="''"
+    [filterColumnsPlaceholder]="'Search'"
+    [expandDetail]="false"
+    [footer]="footer"
+    [pageSizeOptions]="[10, 25, 50, 100]"
+    [pageSize]="10"
+    [tableMinWidth]="400"
+    [isLoadingResultsFilter]="isLoadingResultsFilter"
+    [isLoadingResults]="isLoadingResults"
+    (filteredData)="applyFilter($event)"
+    (buttonClick)="buttonClick($event)"
+    (rowDblClick)="rowDblClick($event)"
+    (modalButtonClick)="add()"
+    (pageChange)="loadDatasource($event)"
+  ></app-dynamic-data-table>
   <!-- columns: required,
                      data: required
                      filter: not required, if null => no filter
