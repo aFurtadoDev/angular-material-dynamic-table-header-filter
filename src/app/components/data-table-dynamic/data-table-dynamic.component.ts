@@ -1,4 +1,11 @@
 import {
+  animate,
+  state,
+  style,
+  transition,
+  trigger,
+} from '@angular/animations';
+import {
   AfterViewInit,
   Component,
   EventEmitter,
@@ -7,6 +14,7 @@ import {
   OnInit,
   Output,
   SimpleChanges,
+  TemplateRef,
   ViewChild,
 } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
@@ -86,6 +94,8 @@ export class DataTableDynamicComponent
   // headersFilters = this.headers.map((x, i) => x + '_' + i);
   filtersModel = [];
   filterKeys = {};
+
+  filterValue = '';
 
   toggleFilters = false;
 
