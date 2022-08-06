@@ -2,21 +2,6 @@
 <div class="row">
   <div class="col-12 pt-3">{{ introText }}</div>
 </div>
-<app-data-table-dynamic
-  [columns]="columns"
-  [buttons]="buttons"
-  [menuButtons]="menuButtons"
-  [data]="data"
-  [filter]="true"
-  [filterPlaceholder]="'Filter any value'"
-  [columnsFilter]="true"
-  [footer]="footer"
-  [pagination]="[5, 25, 100]"
-  [pageSize]="5"
-  [tableMinWidth]="400"
-  (filteredData)="applyFilter($event)"
-  (buttonClick)="buttonClick($event)"
->
   <app-dynamic-data-table
     [toolbarTitle]="'Dynamic Table'"
     [toolbar]="true"
