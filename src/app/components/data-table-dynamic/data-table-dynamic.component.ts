@@ -25,7 +25,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { AppTranslationService } from '../../core/services/app-translation.service';
 import { TableBtn, TableColumn } from '../../core/interfaces';
 import { TableMenu } from '../../core/interfaces/table-menu';
-import { timer } from 'rxjs';
+import { map, merge, startWith, switchMap, timer } from 'rxjs';
 
 @Component({
   selector: 'app-data-table-dynamic',
@@ -119,10 +119,10 @@ export class DataTableDynamicComponent
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    console.log(this.data)
+    console.log(this.data);
     if (this.data) {
       if (changes.data) {
-        this.dataSource = new MatTableDataSource<any>(this.data);
+        this.dataSource = new MatTableDataSource<any>(this.data['data']);
 
         this.dataSource.filterPredicate = (data?: any, filter?: string) => {
           const filterData = JSON.parse(filter);
@@ -191,7 +191,27 @@ export class DataTableDynamicComponent
 
       this.dataSource.paginator = this.paginator;
 
-      // console.log(this.columns.filter((x) => x.activeSort === true).map(m => m.columnDef).toString());
+      // merge(this.paginator.page, this.sort.sortChange)
+      //   .pipe(
+      //     startWith({}),
+      //     switchMap(() => {
+      //       return this.data;
+      //     }),
+      //     map((data) => {
+      //       if (data === null) {
+      //         return [];
+      //       }
+
+      //       // Only refresh the result length if there is new data. In case of rate
+      //       // limit errors, we do not want to reset the paginator to zero, as that
+      //       // would prevent users from re-triggering requests.
+      //       // this.resultsLength = data.data['totalCount'];
+      //       return data;
+      //     })
+      //   )
+      //   .subscribe(
+      //     (data: any) => (this.dataSource = new MatTableDataSource<any>(data))
+      //   );
 
       const directionSort = `${this.columns
         .filter((x) => x.activeSort === true)
