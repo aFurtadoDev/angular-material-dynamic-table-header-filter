@@ -227,8 +227,9 @@
     <mat-paginator
       [hidden]="!pageSizeOptions"
       (page)="pageChange.emit($event)"
-      [length]="121"
-    
+      [length]="11"
+      [pageSizeOptions]="pageSizeOptions"
+      [pageSize]="pageSize"
       showFirstLastButtons
       [ngStyle]="{ 'min-width': +tableMinWidth + 'px' }"
     ></mat-paginator>

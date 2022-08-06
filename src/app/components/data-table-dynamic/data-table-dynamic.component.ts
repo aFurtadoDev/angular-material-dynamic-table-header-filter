@@ -120,9 +120,9 @@ export class DataTableDynamicComponent
 
   ngOnChanges(changes: SimpleChanges): void {
     console.log(this.data)
-    if (this.data['data']) {
+    if (this.data) {
       if (changes.data) {
-        this.dataSource = new MatTableDataSource<any>(this.data['data']);
+        this.dataSource = new MatTableDataSource<any>(this.data);
 
         this.dataSource.filterPredicate = (data?: any, filter?: string) => {
           const filterData = JSON.parse(filter);
