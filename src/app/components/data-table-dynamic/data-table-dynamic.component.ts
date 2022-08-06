@@ -116,6 +116,43 @@ export class DataTableDynamicComponent
 
   ngAfterViewInit(): void {
     this.matTableSort();
+
+    this.dataSource.sort = this.sort;
+    /**
+     * TODO: Analiser matodo comentado e implementar ordenação pelo servidor.
+     * * Utilizar o método abaixo comentado.
+     */
+
+    /* --------------- Método de paginação e ordenação server side -------------- */
+    // If the user changes the sort order, reset back to the first page.
+    this.sort.sortChange.subscribe(() => (this.paginator.pageIndex = 0));
+
+    merge(this.paginator.page, this.sort.sortChange)
+      .pipe(
+        startWith({}),
+        switchMap(() => {
+          this.isLoadingResults = true;
+          return this.data;
+        }),
+        map((data) => {
+          // Flip flag to show that loading has finished.
+          this.isLoadingResults = false;
+          // this.isRateLimitReached = data === null;
+
+          if (data === null) {
+            return [];
+          }
+
+          // Only refresh the result length if there is new data. In case of rate
+          // limit errors, we do not want to reset the paginator to zero, as that
+          // would prevent users from re-triggering requests.
+          // this.resultsLength = data.data['totalCount'];
+          return data;
+        })
+      )
+      .subscribe(
+        (data: any) => (this.dataSource = new MatTableDataSource<any>(data))
+      );
   }
 
   ngOnChanges(changes: SimpleChanges): void {
